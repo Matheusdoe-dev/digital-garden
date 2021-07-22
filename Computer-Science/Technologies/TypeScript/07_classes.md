@@ -402,11 +402,34 @@ class Box<Type> {
 
 - Remember that types are always fully erased! At runtime, there's only one `Box.defautValue` property slot. This means that setting `Box<string>.defaultValue` (if that were possible) would _also_ change `Box<number>.defaultValue` - not good. The `static` members of a generic class can never refer to the class's type parameters.
 
+## `this` at Runtime in Classes
+
+- It's important to remember that TypeScript doesn't change the runtime behavior of JavaScript, and that JavaScript is somewhat famous for having some peculiar runtime behaviors.
+
+```js
+class MyClass {
+  name = "MyClass";
+  getName() {
+    return this.name;
+  }
+}
+const c = new MyClass();
+const obj = {
+  name: "obj",
+  getName: c.getName,
+};
+
+// Prints "obj", not "MyClass"
+console.log(obj.getName());
+```
+
+- By default, the value of `this` inside a function depends on _how the function was called_. In this example, because the function was called through the `obj` reference, its value of `this` was `obj` rather thant the class instance. This is rarely what you want to happen!
+
+### Arrow functions
+
+-
+
 ## References
 
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/2/basic-types.html#emitting-with-errors)
 - [Understanding TypeScript - 2021 Edition, Maximilian Schwarzmüller, Udemy](https://www.udemy.com/share/1013yQBUUdcFZaRnw=/)
-
-```
-
-```
