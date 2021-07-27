@@ -427,7 +427,183 @@ console.log(obj.getName());
 
 ### Arrow functions
 
--
+- If you have a function that will ofter be called in a way that loses its `this` context, it can make sense to use an arrow function property instead of a method definition
+
+```ts
+class MyClass {
+  name = "MyClass";
+  getName = () => {
+    return this.name;
+  };
+}
+const c = new MyClass();
+const g = c.getName;
+// Prints "MyClass" instead of crashing
+console.log(g());
+```
+
+- This has some trade-offs:
+
+  - The `this` value is guaranteed to be correct at runtime, even for code not checked with TypeScript
+
+  - This will use more memory, because each class instance will have its own copy of each function defined this way
+
+  - You can't use `super.getName` in a derived class, because there's no entry in the prototype chain to fetch the base class method form.
+
+### `this` parameters
+
+- In a method or function definition, an initial parameter named `this` has special meaning in TypeScript. These parameters are erased during compilation
+
+```ts
+// TypeScript input with 'this' parameter
+function fn(this: SomeType, x: number) {
+  /* ... */
+}
+```
+
+```js
+// JavaScript output
+function fn(x) {
+  /* ... */
+}
+```
+
+- TypeScript checks that calling a function with a `this` paramter is done so with a correct context. Instead of using an arrow function, we can add a `this` parameter to method definitions to statically enforce that the method is called correctly
+
+```ts
+class MyClass {
+  name = "MyClass";
+  getName(this: MyClass) {
+    return this.name;
+  }
+}
+const c = new MyClass();
+// OK
+c.getName();
+
+// Error, would crash
+const g = c.getName;
+console.log(g());
+// The 'this' context of type 'void' is not assignable to method's 'this' of type 'MyClass'.
+```
+
+- This method takes the opposite trade-offs of the arrow function approach
+
+  - JavaScript callers might still use the class method incorrectly without realizing it
+
+  - Only one function per class definition gets allocated, rather than once per class instance
+
+  - Base method definitions can still be called via `super.`
+
+### `this` Types
+
+- In classes, a special type called `this` refers _dynamically_ to the type of the current class.
+
+```ts
+class Box {
+  contents: string = "";
+  set(value: string) {
+    // (method) Box.set(value: string): this
+    this.contents = value;
+    return this;
+  }
+}
+```
+
+- TypeScript inferred the return type of `set` to be `this`, rather than `Box`.
+
+```ts
+class ClearableBox extends Box {
+  clear() {
+    this.contents = "";
+  }
+}
+
+const a = new ClearableBox();
+const b = a.set("hello");
+// const b: ClearableBox
+```
+
+## Parameter Properties
+
+- TypeScript offers special syntax for turning a constructor parameter into a class property with the same name and vlaue. These are called _parameter properties_ and are created by prefixing a constructor argument with one of the visibility modifiers `public`, `private`, `protected`, or `readonly`. The resulting filed gets those modifiers
+
+```ts
+class Params {
+  constructor(
+    public readonly x: number,
+    protected y: number,
+    private z: number
+  ) {
+    // No body necessary
+  }
+}
+const a = new Params(1, 2, 3);
+console.log(a.x);
+// (property) Params.x: number
+console.log(a.z);
+// Property 'z' is private and only accessible within class 'Params'.
+```
+
+## Class Expressions
+
+- Class expressions are very similar to class declarations. The only real difference is that class expressions don't need a name, though we can refer to them via whatever identifier they ended up bound to
+
+```ts
+const someClass = class<Type> {
+  content: Type;
+  constructor(value: Type) {
+    this.content = value;
+  }
+};
+
+const m = new someClass("Hello, world");
+// const m: someClass<string>
+```
+
+## `abstract` Classes and Members
+
+- Classes, methods, and fields in TypeScript may be _abstract_
+
+- An _abstract method_ or _abstract field_ is one that hasn't had an implementation provided. These members must exist inside an _abstract class_, which cannot be directly instantiated.
+
+- The role of abstract classes is to serve as a base class for subclasses which do implement all athe abstract members. When a class doesn't have any abstract members, it is said to be _concrete_.
+
+```ts
+abstract class Base {
+  abstract getName(): string;
+
+  printName() {
+    console.log("Hello, " + this.getName());
+  }
+}
+
+const b = new Base();
+// Cannot create an instance of an abstract class
+```
+
+- We can't instantiate `Base` with `new` because it's abstract. Instead, we need to make a derived class and implement the abstract members
+
+```ts
+class Derived extends Base {
+  getName() {
+    return "world";
+  }
+}
+
+const d = new Derived();
+d.printName();
+```
+
+- Notice that if we forget to implement the base class's abstract members, we'll get an error
+
+```ts
+class Derived extends Base {
+  // Non-abstract class 'Derived' does not implement inherited abstract member 'getName' from class 'Base'.
+}
+```
+
+### Abstract Construct Signatures
 
 ## References
 
