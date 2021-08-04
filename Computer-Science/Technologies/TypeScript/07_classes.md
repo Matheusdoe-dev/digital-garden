@@ -603,7 +603,44 @@ class Derived extends Base {
 }
 ```
 
-### Abstract Construct Signatures
+## Relations Between Classes
+
+- In most cases, classes in TypeScript are compared structurally, the same as other types.
+
+- For example, these two classes can be used in place of each other because they`re identical
+
+```ts
+class Point1 {
+  x = 0;
+  y = 0;
+}
+
+class Point2 {
+  x = 0;
+  y = 0;
+}
+
+// OK
+const p: Point1 = new Point2();
+```
+
+- Similarly, subtype relationships between classes exist even if there's no explicit inheritance.
+
+```ts
+class Person {
+  name: string;
+  age: number;
+}
+
+class Employee {
+  name: string;
+  age: number;
+  salary: number;
+}
+
+// OK
+const p: Person = new Employee();
+```
 
 ## References
 
