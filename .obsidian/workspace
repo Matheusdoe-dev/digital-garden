@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "Computer-Science/Technologies/Unix/19_shell-substitutions.md",
+            "file": "Computer-Science/Technologies/NestJS/02_controllers.md",
             "mode": "source"
           }
         }
@@ -68,7 +68,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Computer-Science/Technologies/Unix/19_shell-substitutions.md",
+                "file": "Computer-Science/Technologies/NestJS/02_controllers.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -88,6 +88,7 @@
   },
   "active": "9f28968973f1f27b",
   "lastOpenFiles": [
+    "Computer-Science/Technologies/NestJS/02_controllers.md",
     "Computer-Science/Technologies/Unix/19_shell-substitutions.md",
     "Computer-Science/Technologies/Unix/Untitled.md",
     "Computer-Science/Technologies/Unix/18_loop-control.md",
@@ -96,7 +97,6 @@
     "Computer-Science/Technologies/Unix/16_decision-making.md",
     "Untitled.md",
     "Computer-Science/Technologies/Unix/15_shell-basic-operators.md",
-    "Computer-Science/Technologies/Unix/14_shell-arrays.md",
-    "Computer-Science/Technologies/Unix/13_special-variables.md"
+    "Computer-Science/Technologies/Unix/14_shell-arrays.md"
   ]
 }
