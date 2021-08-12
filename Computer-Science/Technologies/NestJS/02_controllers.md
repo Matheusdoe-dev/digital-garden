@@ -152,6 +152,75 @@ getDocs(@Query('version') version) {
 }
 ```
 
+## Route parameters
+
+- In order to define routes with parameters, we can add route parameter **tokens** in the path of the route to capture the dynamic value at that position in the request URL. Route parameters declared in this way can be accessed using the `@Param()` decorator, which should be added to the method signature.
+
+```ts
+@Get(':id')
+findOne(@Param() params): string {
+  console.log(params.id);
+  return `This action returns a #${params.id} cat`;
+}
+```
+
+- `@Param()` is used to decorate a method parameter, and makes the **route** parameters available as properties of that decorathed method parameter inside the body of the method.
+
+- HINT - Import `Param` from the `@nestjs/common` package.
+
+```ts
+@Get(':id')
+findOne(@Param('id') id: string): string {
+  return `This action returns a #${id} cat`;
+}
+```
+
+## Sub-Domain Routing
+
+- The `@Controller` decorator can take a `host` option to require that the HTTP host of the incoming requests matches some specific value.
+
+```ts
+@Controller({ host: 'admin.example.com' })
+@Get()
+index(): string {
+  return 'Admin page';
+}
+```
+
+- Similar to a route `path`, the `hosts` option can use tokens to capture the dynamic value at that position in the host name. Host parameters declared in this way can be accessed using `@HostParam()` decorator, which should be added to the method signature.
+
+```ts
+@Controller({ host: ":account.example.com" })
+export class AccountController {
+  @Get()
+  getInfo(@HostParam("account") account: string) {
+    return account;
+  }
+}
+```
+
+## Asynchronicity
+
+- Nest supports and works well with `async` functions.
+
+- Every async function has to return a `Promise`. This means that you can return a deferred value that Nest will be able to resolve by itself.
+
+```ts
+@Get()
+async findAll(): Promise<any[]> {
+  return [];
+}
+```
+
+- Furthermore, Nest route handlers are even more powerful by being able to return RxJs **observable streams**. Nest will automatically subscribe to the source underneath and take the last emitted value (once the stream is completed).
+
+```ts
+@Get()
+findAll(): Observable<any[]> {
+  return of ([]);
+}
+```
+
 ## References
 
 - [Nest.js docs, Controllers](https://docs.nestjs.com/controllers)
